@@ -6,6 +6,8 @@ const Step1 = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const formData = useSelector((state) => state.form);
+  const confirmed = useSelector((state) => state.form.confirmed);
+
   const [errors, setErrors] = useState({});
   const handleChange = (e) => {
     dispatch(setFormData({ name: e.target.name, value: e.target.value }));
@@ -32,13 +34,13 @@ const Step1 = () => {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
-      // If no errors, navigate to the next step
-      navigate("/step2");
+     
+     !confirmed && navigate("/step2");
     }
   };
 
   return (
-    <div className="pl-16 pt-9">
+    <div className={`${confirmed && "pointer-events-none opacity-50"} pl-16 pt-9 `} >
       <h1 className="text-4xl text-blue-800 font-bold mb-0">Personal Info</h1>
       <p className="text-slate-500 text-sm font-bold mb-9">
         please provide your name ,email address , and phoneNumber.{" "}
@@ -100,8 +102,11 @@ const Step1 = () => {
           />
         </div>
         <div className="flex justify-end">
-          <button className="bg-blue-800 w-[100px] h-10 px-2 text-white rounded-md cursor-pointer">
-            Next Step
+        <button
+          disabled={confirmed}
+            className="bg-blue-800 disabled:bg-green-200 disabled:cursor-not-allowed w-[100px] h-10 px-2 text-white rounded-md cursor-pointer"
+            >
+            {confirmed ? "Confirmed" : "Next step"} 
           </button>
         </div>
       </form>

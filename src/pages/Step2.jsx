@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setPlan, setIsYearly } from "../redux/formSlice"; // Adjust the import path as necessary
+import { setPlan, setIsYearly } from "../redux/formSlice"; 
 
 const Step2 = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { plan, isYearly } = useSelector((state) => state.form);
+  const { plan, isYearly , confirmed } = useSelector((state) => state.form);
 
   const handleToggle = (e) => {
     const isChecked = e.target.checked;
@@ -13,12 +13,12 @@ const Step2 = () => {
     console.log(isChecked);
   };
 
-  const handlePlanChange = (selectedPlan) => {
-    dispatch(setPlan(selectedPlan));
+  const handlePlanChange = (plan,price) => {
+    dispatch(setPlan({plan,price}));
   };
 
   return (
-    <div className="pl-16 pt-9">
+    <div className={`${confirmed && "pointer-events-none opacity-50"} pl-16 pt-9 `} >
       <h1 className="text-4xl text-blue-800 font-bold mb-0">
         Select your plan
       </h1>
@@ -27,7 +27,7 @@ const Step2 = () => {
       </p>
       <div className="flex gap-4 w-[530px]">
         <div
-          onClick={() => handlePlanChange("Arcade")}
+          onClick={() => handlePlanChange("Arcade" , `${isYearly ? "$19/y" : "$9/mo"}`)}
           className={`${
             plan === "Arcade"
               ? "bg-green-300"
@@ -45,7 +45,7 @@ const Step2 = () => {
           </div>
         </div>
         <div
-          onClick={() => handlePlanChange("Advanced")}
+          onClick={() => handlePlanChange("Advanced",`${isYearly ? "$22/y" : "$12/mo"}`)}
           className={`${
             plan === "Advanced"
               ? "bg-green-300"
@@ -67,7 +67,7 @@ const Step2 = () => {
           </div>
         </div>
         <div
-          onClick={() => handlePlanChange("Pro")}
+          onClick={() => handlePlanChange("Pro",`${isYearly ? "$25/y" : "$15/mo"}`)}
           className={`${
             plan === "Pro"
               ? "bg-green-300"
@@ -100,18 +100,21 @@ const Step2 = () => {
       </div>
       <div className="flex items-center justify-between mt-10">
         <h2
-          onClick={() => navigate("/")}
-          className="text-lg text-green-600 font-bold cursor-pointer"
+          onClick={() => !confirmed && navigate("/")} 
+          className={`text-lg font-bold cursor-pointer ${
+            confirmed ? "text-gray-400 cursor-not-allowed" : "text-green-600"
+          }`}
         >
           Go Back
         </h2>
-        <button
-          onClick={() => navigate("/step3")}
-          className="bg-blue-800 w-[100px] h-10 px-2 text-white rounded-md cursor-pointer"
-        >
-          Next Step
-        </button>
-      </div>
+          <button
+          disabled={confirmed}
+            onClick={() => navigate("/step3")}
+            className="bg-blue-800 disabled:bg-green-200 disabled:cursor-not-allowed w-[100px] h-10 px-2 text-white rounded-md cursor-pointer"
+            >
+            {confirmed ? "Confirmed" : "Next step"} 
+          </button>
+        </div>
     </div>
   );
 };
